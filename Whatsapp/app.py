@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 import time
 
+from functions import write_data_to_file, get_last_timestamp
 
 options = webdriver.ChromeOptions()
 options.add_argument('--user-data-dir=./User_Data')
@@ -13,15 +14,6 @@ driver = webdriver.Chrome(
     'C:\\Users\\LAND\\Desktop\\chromedriver.exe', chrome_options=options)
 driver.get("https://web.whatsapp.com/")
 wait = WebDriverWait(driver, 600)
-
-
-def write_data_to_file(msg):
-    try:
-        with open('status messages.txt', 'a+') as f:
-            f.write(msg + "\n\n")
-            f.close()
-    except Exception as e:
-        print(e)
 
 
 def get_status():
@@ -39,22 +31,30 @@ def get_status():
 
     while True:
         try:
-            # status_text = driver.find_element_by_class_name('_3Whw5').text
-            status_text = driver.find_element_by_xpath(
+            message = driver.find_element_by_xpath(
                 '//*[@id="app"]/div/span[3]/div/span/div[2]/div/span/div/div/div/div[5]/div/span').text
-            messages.append(status_text)
+
+            timestamp_txt = driver.find_element_by_xpath(
+                '//*[@id="app"]/div/span[3]/div/span/div[2]/div/span/div/div/div/div[2]/div[2]/div').text
+
+            timestamp = timestamp_txt[-5:] + "\n"
+
+            messages.append(message)
+
+            write_data_to_file('log.log', timestamp)
+
             time.sleep(1)
 
             print("Message downloaded.")
+            # Go to next
             driver.find_element_by_class_name('_3THFw').click()
 
         except:
             break
 
+    driver.close()
     return messages
 
 
 for x in get_status():
-    with open('message.txt', 'a') as f:
-        f.write(x + '\n\n')
-        f.close()
+    write_data_to_file('messages.txt', x + "\n\n\n")
