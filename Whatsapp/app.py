@@ -41,7 +41,7 @@ def get_status():
 
             messages.append(message)
 
-            write_data_to_file('log.log', timestamp)
+            write_data_to_file('files/app.log', timestamp)
 
             time.sleep(1)
 
@@ -57,4 +57,5 @@ def get_status():
 
 
 for x in get_status():
-    write_data_to_file('messages.txt', x + "\n\n\n")
+    write_data_to_file(
+        'files/messages.txt', x + "\n\n\n_________________________________________________________________________\n")
