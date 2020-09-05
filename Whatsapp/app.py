@@ -11,7 +11,7 @@ from functions import write_data_to_file, get_last_timestamp
 options = webdriver.ChromeOptions()
 options.add_argument('--user-data-dir=./User_Data')
 driver = webdriver.Chrome(
-    'C:\\Users\\LAND\\Desktop\\chromedriver.exe', chrome_options=options)
+    'E:\\MegaSyncHP\\Sync\\Code\\python\\webdriver\\chromedriver.exe', chrome_options=options)
 driver.get("https://web.whatsapp.com/")
 wait = WebDriverWait(driver, 600)
 
@@ -58,4 +58,4 @@ def get_status():
 
 for x in get_status():
     write_data_to_file(
-        'files/messages.txt', x + "\n\n\n_________________________________________________________________________\n")
+        'files/messages.txt', x + "\n_____________________________________________________________________________________________\n")
