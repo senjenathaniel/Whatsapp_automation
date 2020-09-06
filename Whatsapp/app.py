@@ -43,8 +43,6 @@ def get_status():
 
             write_data_to_file('files/app.log', timestamp)
 
-            time.sleep(1)
-
             print("Message downloaded.")
             # Go to next
             driver.find_element_by_class_name('_3THFw').click()
