@@ -5,6 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 import time
+import requests
 
 from functions import write_data_to_file, get_last_timestamp
 
@@ -33,19 +34,16 @@ def get_status(username):
 
         while True:
             try:
-                message = driver.find_element_by_xpath(
-                    '//*[@id="app"]/div/span[3]/div/span/div[2]/div/span/div/div/div/div[5]/div/span').text
+                if driver.find_element_by_class_name('_3Whw5'):
+                    image = driver.find_element_by_class_name(
+                        '_3Whw5').get_attribute('src')
+                    print(image + "Image found.")
 
-                timestamp_txt = driver.find_element_by_xpath(
-                    '//*[@id="app"]/div/span[3]/div/span/div[2]/div/span/div/div/div/div[2]/div[2]/div').text
-
-                log = timestamp_txt[-5:] + "...[" + message[:25] + "]\n"
-
-                write_data_to_file('files/app.log', log)
-                write_data_to_file(
-                    'files/messages.txt', timestamp_txt[-5:] + "...\n" + message + '\n\n')
-
-                print("Message downloaded.")
+                    r = requests.get(image)
+                    with open('files/' + image, 'wb') as f:
+                        f.write(r.content)
+                else:
+                    print("No image found!")
                 # Go to next
                 driver.find_element_by_class_name('_3THFw').click()
 
@@ -57,4 +55,4 @@ def get_status(username):
     return messages
 
 
-get_status("Pastor Eresh Tchaku")
+get_status("Faiye")
