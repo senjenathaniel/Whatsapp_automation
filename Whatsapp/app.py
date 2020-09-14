@@ -16,45 +16,43 @@ driver.get("https://web.whatsapp.com/")
 wait = WebDriverWait(driver, 600)
 
 
-def get_status(username):
+def get_status():
 
     messages = []
 
-    WebDriverWait(driver, 15).until(EC.element_to_be_clickable((
+    WebDriverWait(driver, 30).until(EC.element_to_be_clickable((
         By.XPATH, '//*[@id="side"]/header/div[2]/div/span/div[1]/div'))).click()
     print("Opening Status page...")
-    time.sleep(2)
 
-    chats = driver.find_elements_by_class_name("_3ko75")
+    time.sleep(5)
+    WebDriverWait(driver, 30).until(EC.element_to_be_clickable((
+        By.CLASS_NAME, '_3ko75'))).click()
 
-    for chat in chats:
-        if chat.text == username:
-            chat.click()
+    while True:
+        try:
+            message = driver.find_element_by_xpath(
+                '//*[@id="app"]/div/span[3]/div/span/div[2]/div/span/div/div/div/div[5]/div/span').text
 
-        while True:
-            try:
-                message = driver.find_element_by_xpath(
-                    '//*[@id="app"]/div/span[3]/div/span/div[2]/div/span/div/div/div/div[5]/div/span').text
+            timestamp_txt = driver.find_element_by_xpath(
+                '//*[@id="app"]/div/span[3]/div/span/div[2]/div/span/div/div/div/div[2]/div[2]/div').text
 
-                timestamp_txt = driver.find_element_by_xpath(
-                    '//*[@id="app"]/div/span[3]/div/span/div[2]/div/span/div/div/div/div[2]/div[2]/div').text
+            log = timestamp_txt[-5:] + "...[" + message[:25] + "]\n"
 
-                log = timestamp_txt[-5:] + "...[" + message[:25] + "]\n"
+            write_data_to_file('files/app.log', log)
+            write_data_to_file(
+                'files/messages.txt', timestamp_txt[-5:] + "...\n" + message + '\n\n')
 
-                write_data_to_file('files/app.log', log)
-                write_data_to_file(
-                    'files/messages.txt', timestamp_txt[-5:] + "...\n" + message + '\n\n')
+            print("Message downloaded.")
+            # Go to next
+            driver.find_element_by_class_name('_3THFw').click()
 
-                print("Message downloaded.")
-                # Go to next
-                driver.find_element_by_class_name('_3THFw').click()
+        except:
+            break
+        finally:
+            pass
 
-            except:
-                driver.close()
-            finally:
-                break
-
+    driver.close()
     return messages
 
 
-get_status("Pastor Eresh Tchaku")
+get_status()
